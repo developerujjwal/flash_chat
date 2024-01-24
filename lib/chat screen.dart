@@ -20,6 +20,8 @@ class _chatState extends State<chat> {
           children: [
             SizedBox(width: 300,
               child: TextField(
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),

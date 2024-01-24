@@ -28,6 +28,8 @@ class _loginState extends State<login> {
               ),
             ),
             TextField(
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(50)),
@@ -37,6 +39,8 @@ class _loginState extends State<login> {
               height: 10,
             ),
             TextField(
+              obscureText: true,
+              textAlign: TextAlign.center,
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50),

@@ -33,9 +33,9 @@ class _homeState extends State<home> with SingleTickerProviderStateMixin {
       //print(status);
       if (status == AnimationStatus.completed) {
         controller.reverse(from: 1.0);
-      } /*else if (status == AnimationStatus.dismissed) {
+      } else if (status == AnimationStatus.dismissed) {
         controller.forward();
-      }*/
+      }
     });
     controller.addListener(() {
       setState(() {});
@@ -75,7 +75,7 @@ class _homeState extends State<home> with SingleTickerProviderStateMixin {
                   // "${controller.value.toInt()}",
                   textStyle: const TextStyle(fontSize: 50),
                 )],
-                totalRepeatCount: 1,
+                totalRepeatCount: 10,
                 )
               ],
             ),

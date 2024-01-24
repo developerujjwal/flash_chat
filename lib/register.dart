@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'padding.dart';
+import 'chat screen.dart';
 
 class register extends StatefulWidget {
   const register({super.key});
@@ -28,6 +29,8 @@ class _registerState extends State<register> {
                 ),
               ),
               TextField(
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.emailAddress,
                 onChanged: (value) {
                   email = value;
                 },
@@ -41,6 +44,8 @@ class _registerState extends State<register> {
                 height: 20,
               ),
               TextField(
+                obscureText: true,
+                textAlign: TextAlign.center,
                 onChanged: (value) {
                   password = value;
                 },
@@ -61,6 +66,8 @@ class _registerState extends State<register> {
                     MaterialStatePropertyAll(Colors.deepPurpleAccent)),
               ),*/
               padd("register", () {
+                Navigator.push(context,MaterialPageRoute(
+                  builder: (context) => const chat(),));
                 print(email);
                 print(password);
               }),
