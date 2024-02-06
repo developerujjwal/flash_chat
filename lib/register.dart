@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'padding.dart';
 import 'chat screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class register extends StatefulWidget {
   const register({super.key});
@@ -10,6 +11,7 @@ class register extends StatefulWidget {
 }
 
 class _registerState extends State<register> {
+  final _auth = FirebaseAuth.instance;
   late String email;
   late String password;
   @override
@@ -65,9 +67,21 @@ class _registerState extends State<register> {
                     backgroundColor:
                     MaterialStatePropertyAll(Colors.deepPurpleAccent)),
               ),*/
-              padd("register", () {
-                Navigator.push(context,MaterialPageRoute(
-                  builder: (context) => const chat(),));
+              padd("register", () async {
+                try {
+                  final newuser = await _auth.createUserWithEmailAndPassword(
+                      email: email, password: password);
+                  if (newuser != null) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const chat(),
+                        ));
+                  }
+                } catch (e) {
+                  print(e);
+                }
+
                 print(email);
                 print(password);
               }),

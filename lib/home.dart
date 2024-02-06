@@ -3,6 +3,7 @@ import 'package:random/login.dart';
 import 'package:random/register.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'padding.dart';
+
 class home extends StatefulWidget {
   const home({super.key});
 
@@ -70,12 +71,15 @@ class _homeState extends State<home> with SingleTickerProviderStateMixin {
                     height: a.value * 100, //animation.value * 100,
                   ),
                 ),
-                AnimatedTextKit(animatedTexts:[ TypewriterAnimatedText(
-                  'Flash chat_',
-                  // "${controller.value.toInt()}",
-                  textStyle: const TextStyle(fontSize: 50),
-                )],
-                totalRepeatCount: 10,
+                AnimatedTextKit(
+                  animatedTexts: [
+                    TypewriterAnimatedText(
+                      'Flash chat_',
+                      // "${controller.value.toInt()}",
+                      textStyle: const TextStyle(fontSize: 50),
+                    )
+                  ],
+                  totalRepeatCount: 10,
                 )
               ],
             ),
@@ -84,7 +88,7 @@ class _homeState extends State<home> with SingleTickerProviderStateMixin {
             ),
             Hero(
               tag: 'login',
-              child: padd("login",() {
+              child: padd("login", () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -92,7 +96,8 @@ class _homeState extends State<home> with SingleTickerProviderStateMixin {
                   ),
                 );
               }),
-            ),const SizedBox(
+            ),
+            const SizedBox(
               height: 20,
             ),
             /*FilledButton(
@@ -106,18 +111,17 @@ class _homeState extends State<home> with SingleTickerProviderStateMixin {
               },
               child: Text("Register"),
             )*/
-padd("register",  () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const register(),
-    ),
-  );
-}  )
+            padd("register", () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const register(),
+                ),
+              );
+            })
           ],
         ),
       ),
     );
   }
 }
-

@@ -3,9 +3,12 @@ import 'package:random/register.dart';
 import 'home.dart';
 import 'login.dart';
 import 'chat screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(const MyApp());
+void main()async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Initialize Firebase app
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -13,11 +16,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: const home(),initialRoute: '/home', routes: {
-      '/login':(context)=>const login(),
-      '/register':(context)=>const register(),
-      '/home':(context)=>const home(),
-      '/chat screen':(context)=>const chat(),
+    return MaterialApp(home: const home(), initialRoute: '/home', routes: {
+      '/login': (context) => const login(),
+      '/register': (context) => const register(),
+      '/home': (context) => const home(),
+      '/chat screen': (context) => const chat(),
     });
   }
 }

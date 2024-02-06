@@ -51,16 +51,18 @@ class _loginState extends State<login> {
               height: 20,
             ),
             Hero(
-              tag: 'login',
-              child:/* FilledButton(
+                tag: 'login',
+                child: /* FilledButton(
                 onPressed: () {},
                 child: Text("Login"),
               ),*/
-              padd("login", () {
-                Navigator.push(context,MaterialPageRoute(
-                    builder: (context) => const chat(),));
-              })
-            ),
+                    padd("login", () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const chat(),
+                      ));
+                })),
             /*FilledButton(
                 onPressed: () {
                   Navigator.pop(context);
