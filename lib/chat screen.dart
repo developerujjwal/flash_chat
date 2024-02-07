@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class chat extends StatefulWidget {
   const chat({super.key});
@@ -9,7 +10,9 @@ class chat extends StatefulWidget {
 }
 
 class _chatState extends State<chat> {
+late  String msg;
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
   User? loginuser;
   @override
   void initState() {
@@ -30,6 +33,10 @@ class _chatState extends State<chat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [IconButton(icon: Icon(Icons.close),onPressed: () {
+          _auth.signOut();
+          Navigator.pop(context);
+        },)],
         title: const Text('chat'),
         backgroundColor: Colors.blue,
       ),
@@ -41,6 +48,9 @@ class _chatState extends State<chat> {
             SizedBox(
               width: 300,
               child: TextField(
+                onChanged: (value) {
+                  msg=value;
+                },
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
@@ -51,7 +61,11 @@ class _chatState extends State<chat> {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                _firestore.collection('message').add({
+                  'text':msg,
+                });
+              },
               child: const Text('Send'),
             ),
           ],
