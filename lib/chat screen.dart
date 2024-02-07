@@ -13,7 +13,7 @@ class _chatState extends State<chat> {
 late  String msg;
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-  User? loginuser;
+  late User loginuser;
   @override
   void initState() {
     // TODO: implement initState
@@ -24,6 +24,9 @@ late  String msg;
   void getuser() async {
     try {
       final user = await _auth.currentUser;
+      if(user!=null){
+        loginuser=user;
+      }
     } catch (e) {
       print(e);
     }
@@ -64,6 +67,7 @@ late  String msg;
               onPressed: () {
                 _firestore.collection('message').add({
                   'text':msg,
+                  'sender':loginuser.email,
                 });
               },
               child: const Text('Send'),
