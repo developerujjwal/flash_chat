@@ -10,7 +10,7 @@ class chat extends StatefulWidget {
 }
 
 class _chatState extends State<chat> {
-late  String msg;
+  late String msg;
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
   late User loginuser;
@@ -24,11 +24,25 @@ late  String msg;
   void getuser() async {
     try {
       final user = await _auth.currentUser;
-      if(user!=null){
-        loginuser=user;
+      if (user != null) {
+        loginuser = user;
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+// void cht()async{
+  //  final msg = await _firestore.collection('message').get();
+  //for(var abhi in msg.docs){
+  //print (abhi.data());
+  //}
+  //}
+  void cht() async {
+    await for (var msg in _firestore.collection('message').snapshots()) {
+      for (var abhi in msg.docs) {
+        print(abhi.data());
+      }
     }
   }
 
@@ -36,46 +50,83 @@ late  String msg;
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [IconButton(icon: Icon(Icons.close),onPressed: () {
-          _auth.signOut();
-          Navigator.pop(context);
-        },)],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () {
+              cht();
+              //_auth.signOut();
+              // Navigator.pop(context);
+            },
+          )
+        ],
         title: const Text('chat'),
         backgroundColor: Colors.blue,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 300,
-              child: TextField(
-                onChanged: (value) {
-                  msg=value;
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              StreamBuilder(
+                stream: _firestore.collection('message').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.blue,
+                      ),
+                    );
+                  }
+
+                  final messageDocs = snapshot.data?.docs;
+
+                  if (messageDocs != null) {
+                    List<Text> messageWidgets = messageDocs
+                        .map((message) => Text(
+                            '${message.data()['text']} from ${message.data()['sender']}'))
+                        .toList();
+
+                    return Column(children: messageWidgets);
+                  } else {
+                    return Center(
+                        child: Text('No messages yet')); // Handle null case
+                  }
                 },
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    hintText: 'type your massage here ....'),
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                _firestore.collection('message').add({
-                  'text':msg,
-                  'sender':loginuser.email,
-                });
-              },
-              child: const Text('Send'),
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 250,
+                    child: TextField(
+                      onChanged: (value) {
+                        msg = value;
+                      },
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.multiline,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          hintText: 'type your massage here ....'),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _firestore.collection('message').add({
+                        'text': msg,
+                        'sender': loginuser.email,
+                      });
+                    },
+                    child: const Text('Send'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-//gd
