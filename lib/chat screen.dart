@@ -19,7 +19,6 @@ class _chatState extends State<chat> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getuser();
   }
@@ -68,12 +67,11 @@ class _chatState extends State<chat> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding:  EdgeInsets.all(10),
           child: Column(
             children: [
               streammsg(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: 250,
@@ -132,7 +130,7 @@ class streammsg extends StatelessWidget {
 
             return SingleChildScrollView(reverse: true,
               child: Expanded(
-                child: Column(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: mw,
                 ),
               ),
@@ -158,7 +156,7 @@ class bubble extends StatelessWidget {
         children: [
           Text(
             sender,
-            style: TextStyle(fontSize: 20, color: Colors.amber),
+            style: TextStyle(fontSize: 20, color: Colors.black),
           ),
           Material(
             color:isme? Colors.black:Colors.grey,
