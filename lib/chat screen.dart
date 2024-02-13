@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+final _firestore = FirebaseFirestore.instance;
 class chat extends StatefulWidget {
   const chat({super.key});
 
@@ -12,7 +12,7 @@ class chat extends StatefulWidget {
 class _chatState extends State<chat> {
   late String msg;
   final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
+
   late User loginuser;
   @override
   void initState() {
@@ -68,32 +68,7 @@ class _chatState extends State<chat> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              StreamBuilder(
-                stream: _firestore.collection('message').snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.blue,
-                      ),
-                    );
-                  }
-
-                  final messageDocs = snapshot.data?.docs;
-
-                  if (messageDocs != null) {
-                    List<Text> messageWidgets = messageDocs
-                        .map((message) => Text(
-                            '${message.data()['text']} from ${message.data()['sender']}'))
-                        .toList();
-
-                    return Column(children: messageWidgets);
-                  } else {
-                    return Center(
-                        child: Text('No messages yet')); // Handle null case
-                  }
-                },
-              ),
+             streammsg(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -126,6 +101,70 @@ class _chatState extends State<chat> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+class streammsg extends StatelessWidget {
+  const streammsg({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return  StreamBuilder(
+        stream: _firestore.collection('message').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final messages = snapshot.data?.docs;
+            List<bubble> mw = [];
+            for (var message in messages!) {
+              final mt = message.data()['text'];
+              final ms = message.data()['sender'];
+              final storemessage = bubble(ms, mt);
+              mw.add(storemessage);
+            }
+
+            return SingleChildScrollView(
+              child: Expanded(
+                child: Column(
+                  children: mw,
+                ),
+              ),
+            );
+          } else {
+            throw Exception('failed to retrieve messages');
+          }
+        });
+  }
+}
+
+class bubble extends StatelessWidget {
+  bubble(this.sender, this.text);
+  late final String sender;
+  late final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            sender,
+            style: TextStyle(fontSize: 20, color: Colors.amber),
+          ),
+          Material(
+            color: Colors.black,
+            elevation: 5.0,
+            borderRadius: BorderRadius.circular(30),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Text(
+                '$text',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
