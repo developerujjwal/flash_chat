@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 final _firestore = FirebaseFirestore.instance;
+late User loginuser;
 class chat extends StatefulWidget {
   const chat({super.key});
 
@@ -12,8 +14,9 @@ class chat extends StatefulWidget {
 class _chatState extends State<chat> {
   late String msg;
   final _auth = FirebaseAuth.instance;
+  final messagetextcontroller = TextEditingController();
 
-  late User loginuser;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -54,9 +57,9 @@ class _chatState extends State<chat> {
           IconButton(
             icon: Icon(Icons.close),
             onPressed: () {
-              cht();
-              //_auth.signOut();
-              // Navigator.pop(context);
+             // cht();
+              _auth.signOut();
+               Navigator.pop(context);
             },
           )
         ],
@@ -68,13 +71,14 @@ class _chatState extends State<chat> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-             streammsg(),
+              streammsg(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: 250,
                     child: TextField(
+                      controller: messagetextcontroller,
                       onChanged: (value) {
                         msg = value;
                       },
@@ -89,6 +93,7 @@ class _chatState extends State<chat> {
                   ),
                   TextButton(
                     onPressed: () {
+                      messagetextcontroller.clear();
                       _firestore.collection('message').add({
                         'text': msg,
                         'sender': loginuser.email,
@@ -105,25 +110,27 @@ class _chatState extends State<chat> {
     );
   }
 }
+
 class streammsg extends StatelessWidget {
   const streammsg({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return  StreamBuilder(
+    return StreamBuilder(
         stream: _firestore.collection('message').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final messages = snapshot.data?.docs;
+            final messages = snapshot.data?.docs.reversed;
             List<bubble> mw = [];
             for (var message in messages!) {
               final mt = message.data()['text'];
               final ms = message.data()['sender'];
-              final storemessage = bubble(ms, mt);
+              final currentuser = loginuser?.email;
+              final storemessage = bubble(ms, mt,currentuser==ms);
               mw.add(storemessage);
             }
 
-            return SingleChildScrollView(
+            return SingleChildScrollView(reverse: true,
               child: Expanded(
                 child: Column(
                   children: mw,
@@ -138,29 +145,36 @@ class streammsg extends StatelessWidget {
 }
 
 class bubble extends StatelessWidget {
-  bubble(this.sender, this.text);
+  bubble(this.sender, this.text,this.isme);
   late final String sender;
   late final String text;
+  late final bool isme;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: isme? CrossAxisAlignment.end:CrossAxisAlignment.start,
         children: [
           Text(
             sender,
             style: TextStyle(fontSize: 20, color: Colors.amber),
           ),
           Material(
-            color: Colors.black,
+            color:isme? Colors.black:Colors.grey,
             elevation: 5.0,
-            borderRadius: BorderRadius.circular(30),
+            borderRadius:isme? BorderRadius.only(
+                topLeft: Radius.circular(30),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30)):BorderRadius.only(
+                topRight: Radius.circular(30),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30)),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Text(
                 '$text',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                style: TextStyle(fontSize: 20, color: isme? Colors.white:Colors.black),
               ),
             ),
           ),

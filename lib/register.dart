@@ -27,10 +27,12 @@ class _registerState extends State<register> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Hero(
-                  tag: 'logo',
-                  child: Image(
-                    image: AssetImage("images/flsh.png"),
+                Flexible(
+                  child: const Hero(
+                    tag: 'logo',
+                    child: Image(
+                      image: AssetImage("images/flsh.png"),
+                    ),
                   ),
                 ),
                 TextField(

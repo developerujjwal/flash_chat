@@ -27,7 +27,7 @@ class _loginState extends State<login> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Center(
+              Flexible(
                 child: Hero(
                   tag: 'logo',
                   child: Image(
